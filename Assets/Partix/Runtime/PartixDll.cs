@@ -222,6 +222,10 @@ public class PartixDll : MonoBehaviour {
     public static extern ClassId GetClassId(
         IntPtr world, IntPtr b);
 
+    [DllImport("partix_dll")]
+    public static extern void BlendPosition(
+        IntPtr world, IntPtr b, Matrix4x4 m, float n);
+
     void Awake() {
         SetDebugLog();
         DebugLogTest();

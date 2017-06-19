@@ -56,9 +56,6 @@ public class PigController : MonoBehaviour {
             accel * sv.vehicleParameter.accel_factor * grip +
             accel.magnitude * liftUp);
 
-        Debug.Log(accel * sv.vehicleParameter.accel_factor * grip +
-                  accel.magnitude * liftUp);
-
         sv.Rotate(GetBalanceRotation());
         // sv.Rotate(GetTurningRotation());
     }
@@ -161,7 +158,6 @@ public class PigController : MonoBehaviour {
         float angle;
         Vector3 axis;
         q.ToAngleAxis(out angle, out axis);
-        Debug.LogFormat("{0}, {1}", angle, max);
         if (max < angle) {
             return Quaternion.AngleAxis(max, axis);
         } else {
