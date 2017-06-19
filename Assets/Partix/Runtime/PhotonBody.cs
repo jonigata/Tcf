@@ -6,12 +6,21 @@ public class PhotonBody : Photon.MonoBehaviour {
     PhotonWorld photonWorld;
     PhotonView photonView;
 
+    float ping = 0;
+    int count = 0;
+
     void Awake() {
         photonWorld = FindObjectOfType<PhotonWorld>();
         photonView = GetComponent<PhotonView>();
     }
 
-    void Start() {
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.X)) {
+            StartPing();
+        }
+    }
+
+    public void StartPing() {
         if (PhotonNetwork.isMasterClient) {
             photonView.RPC(
                 "Ping",
@@ -23,15 +32,24 @@ public class PhotonBody : Photon.MonoBehaviour {
     [PunRPC]
     public void Ping(float time) {
         Debug.Log("ping");
-        photonView.RPC(
-            "Pong",
-            PhotonTargets.MasterClient,
-            new object[] { time });
+        if (!PhotonNetwork.isMasterClient) {
+            photonView.RPC(
+                "Pong",
+                PhotonTargets.MasterClient,
+                new object[] { time });
+        }
     }
 
     [PunRPC]
     public void Pong(float time) {
-        Debug.LogFormat("{0}ms", Time.time - time);
+        float m = Time.time - time;
+        Debug.LogFormat("{0}sec", Time.time - time);
+
+        ping = (ping * count) + m;
+        count++;
+        ping /= count;
+        if (5 < count) { count = 5; }
+        Debug.LogFormat("avg: {0}sec", ping);
     }
 }
 
