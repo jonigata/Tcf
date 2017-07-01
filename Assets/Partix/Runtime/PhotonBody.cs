@@ -27,6 +27,8 @@ public class PhotonBody : Photon.MonoBehaviour {
     }
 
     void Update() {
+        if (!softVolume.Ready()) { return; }
+
         if (Input.GetKeyDown(KeyCode.X)) {
             StartPing();
         }
