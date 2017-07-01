@@ -9,6 +9,13 @@ public class PhotonBody : Photon.MonoBehaviour {
     float ping = 0;
     int count = 0;
 
+    public SoftVolume softVolume;
+    public float receiveTime;
+    public Vector3 position;
+    public Vector3 prevPosition;
+    public Quaternion orientation;
+    public Quaternion prevOrientation;
+
     void Awake() {
         photonWorld = FindObjectOfType<PhotonWorld>();
         photonView = GetComponent<PhotonView>();
@@ -18,6 +25,17 @@ public class PhotonBody : Photon.MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.X)) {
             StartPing();
         }
+
+        if (PhotonNetwork.isMasterClient) {
+            position = softVolume.currOrientation.GetColumn(3);
+            prevPosition = softVolume.prevOrientation.GetColumn(3);
+            orientation = GetOrientation(softVolume.currOrientation);
+            prevOrientation = GetOrientation(softVolume.prevOrientation);
+        }
+    }
+
+    Quaternion GetOrientation(Matrix4x4 m) {
+        return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1));
     }
 
     public void StartPing() {
@@ -50,6 +68,21 @@ public class PhotonBody : Photon.MonoBehaviour {
         ping /= count;
         if (5 < count) { count = 5; }
         Debug.LogFormat("avg: {0}sec", ping);
+    }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+        if (stream.isWriting) {
+            stream.SendNext(position);
+            stream.SendNext(prevPosition);
+            stream.SendNext(orientation);
+            stream.SendNext(prevOrientation);
+        } else {
+            receiveTime = Time.time;
+            position = (Vector3)stream.ReceiveNext();
+            prevPosition = (Vector3)stream.ReceiveNext();
+            orientation = (Quaternion)stream.ReceiveNext();
+            prevOrientation = (Quaternion)stream.ReceiveNext();
+        }
     }
 }
 
