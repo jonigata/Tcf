@@ -20,7 +20,7 @@ public class SoftVolume : Body {
 
     public Matrix4x4 forDebug;
 
-    World world;
+    [NonSerialized] public World world;
     IntPtr nativePartixSoftVolume = IntPtr.Zero;
     public Matrix4x4 prevOrientation;
     public Matrix4x4 currOrientation;

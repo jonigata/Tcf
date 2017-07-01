@@ -16,6 +16,9 @@ public class PhotonBody : Photon.MonoBehaviour {
     public Quaternion orientation;
     public Quaternion prevOrientation;
 
+    public Matrix4x4 matrix;
+
+
     void Awake() {
         photonWorld = FindObjectOfType<PhotonWorld>();
         photonView = GetComponent<PhotonView>();
@@ -31,6 +34,15 @@ public class PhotonBody : Photon.MonoBehaviour {
             prevPosition = softVolume.prevOrientation.GetColumn(3);
             orientation = GetOrientation(softVolume.currOrientation);
             prevOrientation = GetOrientation(softVolume.prevOrientation);
+        } else {
+            var t = Time.time - receiveTime;
+            var z = t / softVolume.world.deltaTime;
+
+            Vector3 v = position + (position - prevPosition) * z;
+            Quaternion q =
+                Quaternion.SlerpUnclamped(prevOrientation, orientation, z);
+            Matrix4x4 m = Matrix4x4.TRS(v, q, Vector3.one);
+            matrix = m;
         }
     }
 
