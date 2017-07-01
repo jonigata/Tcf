@@ -9,6 +9,8 @@ public class PhotonBody : Photon.MonoBehaviour {
     float ping = 0;
     int count = 0;
 
+    public float blendFactor;
+
     public SoftVolume softVolume;
     public float receiveTime;
     public Vector3 position;
@@ -43,6 +45,7 @@ public class PhotonBody : Photon.MonoBehaviour {
                 Quaternion.SlerpUnclamped(prevOrientation, orientation, z);
             Matrix4x4 m = Matrix4x4.TRS(v, q, Vector3.one);
             matrix = m;
+            softVolume.BlendPosition(m, blendFactor);
         }
     }
 
