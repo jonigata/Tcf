@@ -89,7 +89,7 @@ public class SoftVolume : Body {
         if (Input.GetKeyDown(KeyCode.Z)) {
             Matrix4x4 mm = currOrientation;
             mm[1,3] += 0.1f;
-            BlendPosition(mm, 0.5f);
+            BlendPosition(mm, 1.0f, 0.5f);
         }
     }
 
@@ -242,8 +242,8 @@ public class SoftVolume : Body {
         world.AddForce(nativePartixSoftVolume, v);
     }
 
-    public void BlendPosition(Matrix4x4 m, float n) {
-        world.BlendPosition(nativePartixSoftVolume, m, n);
+    public void BlendPosition(Matrix4x4 m, float n, float dn) {
+        world.BlendPosition(nativePartixSoftVolume, m, n, dn);
     }
 
 }

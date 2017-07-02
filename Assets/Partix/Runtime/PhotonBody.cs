@@ -10,6 +10,7 @@ public class PhotonBody : Photon.MonoBehaviour {
     int count = 0;
 
     public float blendFactor;
+    public float velocityBlendFactor;
 
     public SoftVolume softVolume;
     public float receiveTime;
@@ -44,17 +45,6 @@ public class PhotonBody : Photon.MonoBehaviour {
             prevPosition = softVolume.prevOrientation.GetColumn(3);
             orientation = GetOrientation(softVolume.currOrientation);
             prevOrientation = GetOrientation(softVolume.prevOrientation);
-
-            var t = 0.2f;
-            var z = t / softVolume.world.deltaTime;
-
-            Vector3 v = position + (position - prevPosition) * z;
-            Quaternion q =
-                Quaternion.SlerpUnclamped(prevOrientation, orientation, z);
-            Matrix4x4 m = Matrix4x4.TRS(v, q, Vector3.one);
-            matrix = m;
-
-            softVolume.BlendPosition(m, 1.0f);
         } else {
 /*
             var t = Time.time - receiveTime;
@@ -69,7 +59,7 @@ public class PhotonBody : Photon.MonoBehaviour {
 */
             Matrix4x4 m = Matrix4x4.TRS(position, orientation, Vector3.one);
             matrix = m;
-            softVolume.BlendPosition(m, 1.0f);
+            softVolume.BlendPosition(m, blendFactor, velocityBlendFactor);
         }
     }
 

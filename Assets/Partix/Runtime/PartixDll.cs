@@ -224,7 +224,7 @@ public class PartixDll : MonoBehaviour {
 
     [DllImport("partix_dll")]
     public static extern void BlendPosition(
-        IntPtr world, IntPtr b, Matrix4x4 m, float n);
+        IntPtr world, IntPtr b, Matrix4x4 m, float n, float dn);
 
     [DllImport("partix_dll")]
     public static extern void EstimateOrientation(

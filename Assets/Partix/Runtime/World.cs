@@ -251,8 +251,8 @@ public class World : MonoBehaviour {
         return PartixDll.GetClassId(nativeWorld, b);
     }
 
-    public void BlendPosition(IntPtr b, Matrix4x4 m, float n) {
-        PartixDll.BlendPosition(nativeWorld, b, m, n);
+    public void BlendPosition(IntPtr b, Matrix4x4 m, float n, float dn) {
+        PartixDll.BlendPosition(nativeWorld, b, m, n, dn);
     }
 
 }
