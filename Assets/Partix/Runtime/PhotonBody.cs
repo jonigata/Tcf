@@ -67,6 +67,9 @@ public class PhotonBody : Photon.MonoBehaviour {
             matrix = m;
             softVolume.BlendPosition(m, blendFactor);
 */
+            Matrix4x4 m = Matrix4x4.TRS(position, orientation, Vector3.one);
+            matrix = m;
+            softVolume.BlendPosition(m, 1.0f);
         }
     }
 
@@ -107,18 +110,10 @@ public class PhotonBody : Photon.MonoBehaviour {
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        if (stream.isWriting) {
-            stream.SendNext(position);
-            stream.SendNext(prevPosition);
-            stream.SendNext(orientation);
-            stream.SendNext(prevOrientation);
-        } else {
-            receiveTime = Time.time;
-            position = (Vector3)stream.ReceiveNext();
-            prevPosition = (Vector3)stream.ReceiveNext();
-            orientation = (Quaternion)stream.ReceiveNext();
-            prevOrientation = (Quaternion)stream.ReceiveNext();
-        }
+        stream.Serialize(ref position);
+        stream.Serialize(ref prevPosition);
+        stream.Serialize(ref orientation);
+        stream.Serialize(ref prevOrientation);
     }
 }
 
