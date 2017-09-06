@@ -11,12 +11,8 @@ public class PhotonClient : MonoBehaviour {
         Debug.Log("OnJoinedLobby()");
         RoomOptions roomOptions = new RoomOptions() {
             isVisible = false,
-            maxPlayers = 4
+            maxPlayers = 6
         };
         PhotonNetwork.JoinOrCreateRoom("TCF", roomOptions, TypedLobby.Default);
-    }
-
-    void OnJoinedRoom() {
-        Debug.Log("OnJoinedRoom()");
     }
 }

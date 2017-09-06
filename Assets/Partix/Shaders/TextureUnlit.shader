@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Partix/TextureUnlit"
@@ -43,7 +45,7 @@ Shader "Partix/TextureUnlit"
 				v2f o;
                                 o.vertex = v.vertex;
                         #ifdef EDITOR_MODE
-                                o.vertex = mul(UNITY_MATRIX_MVP, o.vertex);
+                                o.vertex = UnityObjectToClipPos(o.vertex);
                         #elif PLAY_MODE
 				o.vertex = mul(_Deform, v.vertex);
 

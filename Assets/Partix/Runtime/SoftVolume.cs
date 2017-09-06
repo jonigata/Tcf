@@ -33,10 +33,8 @@ public class SoftVolume : Body {
     }
 
     IEnumerator Start() {
-        Debug.Log("A");
         yield return new WaitUntil(() => world.Ready());
 
-        Debug.Log("B");
         volume.DumpStats(gameObject.name);
         if (vehicle) {
             nativePartixSoftVolume = world.CreateVehicle2(
@@ -237,6 +235,11 @@ public class SoftVolume : Body {
         return world.GetPosition(nativePartixSoftVolume);
     }
     
+    public Vector3 GetInitialPosition() {
+        Assert.IsTrue(nativePartixSoftVolume != IntPtr.Zero);
+        return world.GetInitialPosition(nativePartixSoftVolume);
+    }
+    
     public override void AddForce(Vector3 v) {
         Assert.IsTrue(nativePartixSoftVolume != IntPtr.Zero);
         world.AddForce(nativePartixSoftVolume, v);
@@ -244,6 +247,10 @@ public class SoftVolume : Body {
 
     public void BlendPosition(Matrix4x4 m, float n, float dn) {
         world.BlendPosition(nativePartixSoftVolume, m, n, dn);
+    }
+
+    public void Teleport(Vector3 v) {
+        world.Teleport(nativePartixSoftVolume, v);
     }
 
 }

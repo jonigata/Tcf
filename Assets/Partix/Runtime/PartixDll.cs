@@ -156,6 +156,9 @@ public class PartixDll : MonoBehaviour {
     public static extern void GetOrientation(
         IntPtr world, IntPtr body, out Matrix4x4 m);
 
+    public static extern void GetInitialPosition(
+        IntPtr world, IntPtr body, out Vector3 normal);
+
     [DllImport("partix_dll")]
     public static extern int GetWireFrameVertexCount(
         IntPtr world, IntPtr b);
@@ -229,6 +232,10 @@ public class PartixDll : MonoBehaviour {
     [DllImport("partix_dll")]
     public static extern void EstimateOrientation(
         IntPtr world, IntPtr b, float deltaTime, out Matrix4x4 m);
+
+    [DllImport("partix_dll")]
+    public static extern void Teleport(
+        IntPtr world, IntPtr b, Vector3 v);
 
     void Awake() {
         SetDebugLog();

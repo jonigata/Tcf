@@ -18,6 +18,7 @@ public class WireFrame : MonoBehaviour {
     World world;
     MeshFilter meshFilter;
     Mesh mesh;
+    float usedScale = 1.0f;
     Volume usedVolume;
 
     Color[] colors;
@@ -31,8 +32,10 @@ public class WireFrame : MonoBehaviour {
 
     void Update() {
         if (!Application.isPlaying) {
-            if (usedVolume == softVolume.volume) { return; }
+            if (usedVolume == softVolume.volume &&
+                usedScale == softVolume.partixScale) { return; }
             usedVolume = softVolume.volume;
+            usedScale = softVolume.partixScale;
             if (usedVolume != null) {
                 SetUpFromStaticData();
             }
@@ -57,7 +60,13 @@ public class WireFrame : MonoBehaviour {
     }
 
     void SetUpFromStaticData() {
-        mesh.vertices = usedVolume.vertices;
+        mesh.SetIndices(null, MeshTopology.Lines, 0);
+
+        Vector3[] vertices = new Vector3[usedVolume.vertices.Length];
+        for (int j = 0 ; j < usedVolume.vertices.Length ; j++) {
+            vertices[j] = usedVolume.vertices[j] * softVolume.partixScale;
+        }
+        mesh.vertices = vertices;
 
         int[] indices = new int[usedVolume.faces.Length * 6];
         int i = 0;
