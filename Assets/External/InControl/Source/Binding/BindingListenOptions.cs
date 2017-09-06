@@ -26,6 +26,11 @@
 		public bool IncludeMouseButtons = false;
 
 		/// <summary>
+		/// Include mouse scroll wheel when listening for new bindings.
+		/// </summary>
+		public bool IncludeMouseScrollWheel = false;
+
+		/// <summary>
 		/// Include keyboard keys when listening for new bindings.
 		/// </summary>
 		public bool IncludeKeys = true;
@@ -62,7 +67,6 @@
 		/// When <code>true</code>, the value of AllowDuplicateBindingsPerSet is irrelevant.
 		/// </summary>
 		public bool UnsetDuplicateBindingsOnSet = false;
-
 
 		/// <summary>
 		/// If an existing duplicate binding already exists on the same action, 

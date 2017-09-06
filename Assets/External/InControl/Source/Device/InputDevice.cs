@@ -31,6 +31,14 @@ namespace InControl
 		public TwoAxisInputControl RightStick { get; private set; }
 		public TwoAxisInputControl DPad { get; private set; }
 
+        /// <summary>
+        /// When a device is passive, it will never be considered an active device.
+        /// This may be useful if you want a device to be accessible, but not
+        /// show up in places where active devices are used. 
+        /// Defaults to <code>false</code>.
+        /// </summary>
+        public bool Passive;
+
 
 		protected struct AnalogSnapshotEntry
 		{
@@ -74,12 +82,14 @@ namespace InControl
 			DeviceClass = InputDeviceClass.Unknown;
 			DeviceStyle = InputDeviceStyle.Unknown;
 
+            Passive = false;
+
 			const int numInputControlTypes = (int) InputControlType.Count + 1;
 			ControlsByTarget = new InputControl[numInputControlTypes];
 			controls = new List<InputControl>( 32 );
 			Controls = new ReadOnlyCollection<InputControl>( controls );
-
-			RemoveAliasControls();
+                
+            RemoveAliasControls();
 		}
 
 
@@ -360,7 +370,7 @@ namespace InControl
 
 		bool AnyCommandControlIsPressed()
 		{
-			for (var i = (int) InputControlType.Back; i <= (int) InputControlType.Power; i++)
+			for (var i = (int) InputControlType.Back; i <= (int) InputControlType.Minus; i++)
 			{
 				var control = ControlsByTarget[i];
 				if (control != null && control.IsPressed)

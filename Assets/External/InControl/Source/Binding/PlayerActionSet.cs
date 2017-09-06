@@ -73,6 +73,10 @@ namespace InControl
 		/// </summary>
 		public bool Enabled { get; set; }
 
+		/// <summary>
+		/// The prevent input to all actions while any action in the set is listening for a binding.
+		/// </summary>
+		public bool PreventInputWhileListeningForBinding { get; set; }
 
 		/// <summary>
 		/// This property can be used to store whatever arbitrary game data you want on this action set.
@@ -91,6 +95,7 @@ namespace InControl
 		protected PlayerActionSet()
 		{
 			Enabled = true;
+			PreventInputWhileListeningForBinding = true;
 			Device = null;
 			IncludeDevices = new List<InputDevice>();
 			ExcludeDevices = new List<InputDevice>();
@@ -334,7 +339,14 @@ namespace InControl
 		}
 
 
-		internal bool HasBinding( BindingSource binding )
+		/// <summary>
+		/// Searches all the bindings on all the actions on this set to see if any 
+		/// match the provided binding object.
+		/// </summary>
+		/// <returns><c>true</c>, if a matching binding is found on any action on
+		/// this set, <c>false</c> otherwise.</returns>
+		/// <param name="binding">The BindingSource template to search for.</param>
+		public bool HasBinding( BindingSource binding )
 		{
 			if (binding == null)
 			{
@@ -354,7 +366,12 @@ namespace InControl
 		}
 
 
-		internal void RemoveBinding( BindingSource binding )
+		/// <summary>
+		/// Searches all the bindings on all the actions on this set to see if any 
+		/// match the provided binding object and, if found, removes it.
+		/// </summary>
+		/// <param name="binding">The BindingSource template to search for.</param>
+		public void RemoveBinding( BindingSource binding )
 		{
 			if (binding == null)
 			{
@@ -364,7 +381,19 @@ namespace InControl
 			var actionsCount = actions.Count;
 			for (var i = 0; i < actionsCount; i++)
 			{
-				actions[i].FindAndRemoveBinding( binding );
+				actions[i].RemoveBinding( binding );
+			}
+		}
+
+
+		/// <summary>
+		/// Query whether any action in this set is currently listening for a new binding.
+		/// </summary>
+		public bool IsListeningForBinding
+		{
+			get
+			{
+				return listenWithAction != null;
 			}
 		}
 
@@ -440,7 +469,7 @@ namespace InControl
 
 
 		/// <summary>
-		/// Load a state returned by calling Dump() at a prior time.
+		/// Load a state returned by calling Save() at a prior time.
 		/// </summary>
 		/// <param name="data">The data string.</param>
 		public void Load( string data )
@@ -487,3 +516,4 @@ namespace InControl
 		}
 	}
 }
+
