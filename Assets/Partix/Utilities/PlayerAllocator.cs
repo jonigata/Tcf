@@ -29,5 +29,8 @@ public class PlayerAllocator : Photon.MonoBehaviour {
     public void Allocate(int playerId) {
         Debug.Log("Allocate " + playerId.ToString());
     }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+    }    
     
 }
