@@ -139,6 +139,13 @@ public class World : MonoBehaviour {
         return m;
     }
 
+    public Vector3 GetInitialPosition(IntPtr body) {
+        Assert.IsTrue(nativeWorld != IntPtr.Zero);
+        Vector3 v;
+        PartixDll.GetInitialPosition(nativeWorld, body, out v);
+        return v;
+    }
+
     public Vector3[] GetWireFrameVertices(IntPtr body) {
         Assert.IsTrue(nativeWorld != IntPtr.Zero);
         int c = PartixDll.GetWireFrameVertexCount(nativeWorld, body);
@@ -253,6 +260,10 @@ public class World : MonoBehaviour {
 
     public void BlendPosition(IntPtr b, Matrix4x4 m, float n, float dn) {
         PartixDll.BlendPosition(nativeWorld, b, m, n, dn);
+    }
+
+    public void Teleport(IntPtr b, Vector3 v) {
+        PartixDll.Teleport(nativeWorld, b, v);
     }
 
 }

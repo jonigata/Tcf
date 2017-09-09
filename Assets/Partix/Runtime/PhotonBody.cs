@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace Partix {
 
+// TODO: delayŒv‘ª‚ð•ª‚¯‚é
+
 public class PhotonBody : Photon.MonoBehaviour {
     PhotonWorld photonWorld;
     PhotonView photonView;

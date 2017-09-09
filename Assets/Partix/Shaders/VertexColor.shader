@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Partix/VertexColorShader" {
 	SubShader{
 		Pass {
@@ -19,7 +21,7 @@ Shader "Partix/VertexColorShader" {
 				v2f o;
                                 o.pos = v.vertex;
                         #ifdef EDITOR_MODE
-                                o.pos = mul(UNITY_MATRIX_MVP, o.pos);
+                                o.pos = UnityObjectToClipPos(o.pos);
                         #elif PLAY_MODE
 				o.pos = mul(_Deform, o.pos);
 				o.pos = mul(UNITY_MATRIX_VP, o.pos);
@@ -49,7 +51,7 @@ Shader "Partix/VertexColorShader" {
 				v2f o;
                                 o.pos = v.vertex;
                         #ifdef EDITOR_MODE
-                                o.pos = mul(UNITY_MATRIX_MVP, o.pos);
+                                o.pos = UnityObjectToClipPos(o.pos);
                         #elif PLAY_MODE
 				o.pos = mul(_ShadowDeform, o.pos);
 				o.pos = mul(UNITY_MATRIX_VP, o.pos);
