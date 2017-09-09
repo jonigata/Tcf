@@ -11,10 +11,7 @@ public class PhotonAllocator : Photon.MonoBehaviour {
 
     void OnJoinedRoom() {
         Debug.Log("OnJoinedRoom()");
-        if (PhotonNetwork.isMasterClient) {
         Allocate(allocateeIdSeed);
-            DoActivate();
-        }
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player) {
@@ -26,25 +23,22 @@ public class PhotonAllocator : Photon.MonoBehaviour {
                     "Allocate",
                     player,
                     new object[] { allocateeIdSeed });
+                allocateeIdSeed++;
             } 
-            DoActivate();
         } else {
             Debug.Log("This is not master client");
         }
-    }
-
-    void DoActivate() {
-        photonView.RPC(
-            "Activate",
-            PhotonTargets.AllBuffered,
-            new object[] { allocateeIdSeed });
-        allocateeIdSeed++;
     }
 
     [PunRPC]
     public void Allocate(int allocateeId) {
         Debug.Log("Allocate " + allocateeId.ToString());
         allocatees[allocateeId].OnAllocate.Invoke();
+
+        photonView.RPC(
+            "Activate",
+            PhotonTargets.Others,
+            new object[] { allocateeIdSeed });
     }
 
     [PunRPC]
