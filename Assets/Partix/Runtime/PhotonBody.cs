@@ -34,11 +34,13 @@ public class PhotonBody : Photon.MonoBehaviour {
         if (!softVolume.Ready()) { return; }
 
         if (photonView.isMine) {
+            Debug.Log("isMine");
             position = softVolume.currOrientation.GetColumn(3);
             prevPosition = softVolume.prevOrientation.GetColumn(3);
             orientation = GetOrientation(softVolume.currOrientation);
             prevOrientation = GetOrientation(softVolume.prevOrientation);
         } else {
+            Debug.Log("isNotMine");
             var t = Time.time - receiveTime;
             var z = t / softVolume.world.deltaTime;
 
