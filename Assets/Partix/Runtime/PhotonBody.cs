@@ -2,10 +2,7 @@ using UnityEngine;
 
 namespace Partix {
 
-// TODO: delayŒv‘ª‚ð•ª‚¯‚é
-
 public class PhotonBody : Photon.MonoBehaviour {
-    PhotonWorld photonWorld;
     PhotonView photonView;
 
     float ping = 0;
@@ -23,9 +20,7 @@ public class PhotonBody : Photon.MonoBehaviour {
 
     public Matrix4x4 matrix;
 
-
     void Awake() {
-        photonWorld = FindObjectOfType<PhotonWorld>();
         photonView = GetComponent<PhotonView>();
 
         receiveTime = 0;
@@ -38,11 +33,7 @@ public class PhotonBody : Photon.MonoBehaviour {
     void Update() {
         if (!softVolume.Ready()) { return; }
 
-        if (Input.GetKeyDown(KeyCode.X)) {
-            StartPing();
-        }
-
-        if (PhotonNetwork.isMasterClient) {
+        if (photonView.isMine) {
             position = softVolume.currOrientation.GetColumn(3);
             prevPosition = softVolume.prevOrientation.GetColumn(3);
             orientation = GetOrientation(softVolume.currOrientation);
@@ -62,38 +53,6 @@ public class PhotonBody : Photon.MonoBehaviour {
 
     Quaternion GetOrientation(Matrix4x4 m) {
         return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1));
-    }
-
-    public void StartPing() {
-        if (PhotonNetwork.isMasterClient) {
-            photonView.RPC(
-                "Ping",
-                PhotonTargets.AllViaServer,
-                new object[] { Time.time });
-        }
-    }
-
-    [PunRPC]
-    public void Ping(float time) {
-        Debug.Log("ping");
-        if (!PhotonNetwork.isMasterClient) {
-            photonView.RPC(
-                "Pong",
-                PhotonTargets.MasterClient,
-                new object[] { time });
-        }
-    }
-
-    [PunRPC]
-    public void Pong(float time) {
-        float m = Time.time - time;
-        Debug.LogFormat("{0}sec", Time.time - time);
-
-        ping = (ping * count) + m;
-        count++;
-        ping /= count;
-        if (5 < count) { count = 5; }
-        Debug.LogFormat("avg: {0}sec", ping);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
