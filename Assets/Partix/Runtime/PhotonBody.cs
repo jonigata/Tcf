@@ -8,11 +8,11 @@ public class PhotonBody : Photon.MonoBehaviour {
     float ping = 0;
     int count = 0;
 
-    public float blendFactor;
-    public float velocityBlendFactor;
+    public float blendFactor = 0.1f;
+    public float velocityBlendFactor = 0.5f;
 
     public SoftVolume softVolume;
-    public float receiveTime;
+    double sendTime;
     public Vector3 position;
     public Vector3 prevPosition;
     public Quaternion orientation;
@@ -23,7 +23,7 @@ public class PhotonBody : Photon.MonoBehaviour {
     void Awake() {
         photonView = GetComponent<PhotonView>();
 
-        receiveTime = 0;
+        sendTime = 0;
         position = Vector3.zero;
         prevPosition = Vector3.zero;
         orientation = Quaternion.identity;
@@ -34,20 +34,19 @@ public class PhotonBody : Photon.MonoBehaviour {
         if (!softVolume.Ready()) { return; }
 
         if (photonView.isMine) {
-            Debug.Log("isMine");
             position = softVolume.currOrientation.GetColumn(3);
             prevPosition = softVolume.prevOrientation.GetColumn(3);
             orientation = GetOrientation(softVolume.currOrientation);
             prevOrientation = GetOrientation(softVolume.prevOrientation);
         } else {
-            Debug.Log("isNotMine");
-            var t = Time.time - receiveTime;
-            var z = t / softVolume.world.deltaTime;
+            var t = PhotonNetwork.time - sendTime;
+            var z = (float)(t / softVolume.world.deltaTime);
 
-            Vector3 v = position + (position - prevPosition) * z;
+            Vector3 v = position - prevPosition;
+            Vector3 p = position + v * z;
             Quaternion q =
                 Quaternion.SlerpUnclamped(prevOrientation, orientation, z);
-            Matrix4x4 m = Matrix4x4.TRS(v, q, Vector3.one);
+            Matrix4x4 m = Matrix4x4.TRS(p, q, Vector3.one);
             matrix = m;
             softVolume.BlendPosition(m, blendFactor, velocityBlendFactor);
         }
@@ -63,7 +62,7 @@ public class PhotonBody : Photon.MonoBehaviour {
         stream.Serialize(ref orientation);
         stream.Serialize(ref prevOrientation);
         if (!stream.isWriting) {
-            receiveTime = Time.time;
+            sendTime = info.timestamp;
         }
     }
 }
